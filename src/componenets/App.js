@@ -9,13 +9,21 @@ class App extends React.Component {
     videos: [],
     selectedVideo: null
   }
+
+  componentDidMount () {
+    this.onSearchGo('puppy')
+  }
+
   onSearchGo = async term => {
     const responce = await youtube.get('/search', {
       params: {
         q: term
       }
     })
-    this.setState({ videos: responce.data.items })
+    this.setState({
+      videos: responce.data.items,
+      selectedVideo: responce.data.items[0]
+    })
   }
 
   onVideoSelect = video => {
@@ -26,8 +34,21 @@ class App extends React.Component {
     return (
       <div>
         <SearchBar sendToParent={this.onSearchGo} />
-        <VideoDetail video={this.state.selectedVideo} />
-        <VideoList onVideoSelect={this.onVideoSelect} videos={this.state.videos} />
+        <div className='ui grid'>
+          <div className='ui row'>
+            <div className='ten wide column'>
+              <VideoDetail
+                video={this.state.selectedVideo}
+                />
+            </div>
+            <div className='six wide column'>
+              <VideoList
+                onVideoSelect={this.onVideoSelect}
+                videos={this.state.videos}
+              />
+            </div>
+          </div>  
+        </div>
       </div>
     )
   }
